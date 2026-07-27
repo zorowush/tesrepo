@@ -1,9 +1,109 @@
-<!--
-  README PERSIMANU Jepara
-  Opsional: kalau mau path aset lebih rapi untuk README, pindahkan logo & maskot
-  ke folder `public/img/` lalu ganti dua path gambar di bawah jadi
-  `public/img/logo-persimanu.jpeg` & `public/img/maskot-sielang.jpeg`.
--->
+# PERSIMANU - Sistem Informasi Manajemen Lomba Pramuka
+
+Sistem manajemen lomba pramuka multi-role (Admin, Juri, Operator Sekolah) berbasis Laravel + Vue 3 + Inertia.
+
+---
+
+## 🚀 Panduan Deploy ke Server
+
+### 1. Persyaratan Server
+- PHP 8.3+
+- MySQL 8.0+
+- Composer
+- Node.js 20+
+- Web server (Nginx/Apache) pointing ke `public/`
+
+### 2. Langkah Deploy
+
+```bash
+# Clone repo
+git clone https://github.com/zorowush/tesrepo.git
+cd tesrepo
+
+# Install PHP dependencies
+composer install --no-dev --optimize-autoloader
+
+# Copy & setup environment
+cp .env.example .env
+php artisan key:generate
+```
+
+Edit `.env` sesuaikan server:
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=persimanu_db
+DB_USERNAME=root
+DB_PASSWORD=
+APP_URL=https://domainkamu.com
+```
+
+```bash
+# Import database (dari file persimanu_db.sql)
+mysql -u root -p persimanu_db < persimanu_db.sql
+
+# Atau jalankan migrasi + seeder dari awal (database kosong)
+# php artisan migrate --seed
+
+# Install & build frontend
+npm install
+npm run build
+
+# Buat storage link
+php artisan storage:link
+
+# Optimasi
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+### 3. Login (Password: `password123`)
+
+| Role | Email |
+|------|-------|
+| **Admin** | admin@persimanu.test |
+| **Juri** | juri1@dummy.test / juri2@dummy.test |
+| **Operator Sekolah** | op0@dummy.test s.d. op4@dummy.test |
+
+### 4. Web Server (Nginx)
+
+Arahkan root ke `{path}/public/`:
+
+```nginx
+root /path/ke/project/public;
+index index.php;
+
+location / {
+    try_files $uri $uri/ /index.php?$query_string;
+}
+
+location ~ \.php$ {
+    fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+    fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+    include fastcgi_params;
+}
+```
+
+---
+
+## 🧑‍💻 Semua Akun (persimanu_db.sql, password default: `password123`)
+
+| ID | Role | Nama | Email |
+|----|------|------|-------|
+| 1 | **admin** | Admin | admin@persimanu.test |
+| 2 | juri | Imam ganteng | khoirulimam7@gmail.com |
+| 3 | juri | Irul | khoirulimam76@gmail.com |
+| 4 | operator-sekolah | Khoirul imam fazri | khoirulimam795@gmail.com |
+| 5 | operator-sekolah | Khoirul imam fazri | khoirulimam5@gmail.com |
+| 6 | juri | Juri Satu | juri1@dummy.test |
+| 7 | juri | Juri Dua | juri2@dummy.test |
+| 8 | operator-sekolah | Operator MTs NU Jepara | op0@dummy.test |
+| 9 | operator-sekolah | Operator MA NU Kudus | op1@dummy.test |
+| 10 | operator-sekolah | Operator SMP NU Demak | op2@dummy.test |
+| 11 | operator-sekolah | Operator MI NU Pati | op3@dummy.test |
+| 12 | operator-sekolah | Operator MTs NU Rembang | op4@dummy.test |
 
 <p align="center">
   <img src="resources/js/Pages/Publik/logo-persimanu.jpeg" alt="Logo PERSIMANU Jepara" width="220" />
