@@ -115,10 +115,16 @@ class LandingController extends Controller
         return collect($rows)->map(fn ($r, $i) => $r + ['rank' => $i + 1])->values()->all();
     }
 
-    /** Leaderboard per lomba, live dari penilaian (rata-rata juri per regu). */
+    /** Leaderboard per lomba — hanya tampil jika sudah difinalisasi admin. */
     private function leaderboards(Event $event): array
     {
         return $event->lombas()->orderBy('nama')->get()->map(function (Lomba $lomba) {
+            // Hanya tampilkan leaderboard jika lomba sudah difinalisasi
+            $finalized = Juara::where('lomba_id', $lomba->id)->where('is_final', true)->exists();
+            if (!$finalized) {
+                return ['lomba' => ['id' => $lomba->id, 'nama' => $lomba->nama], 'rows' => []];
+            }
+
             // golongan per regu di lomba ini
             $golMap = \App\Models\LombaKontingen::where('lomba_id', $lomba->id)
                 ->pluck('golongan', 'kontingen_id');

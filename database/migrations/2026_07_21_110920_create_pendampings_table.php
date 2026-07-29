@@ -43,11 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('pendampings', function (Blueprint $table) {
-            $table->dropColumn([
-                'golongan_binaan',
-                'asal_instansi',
-            ]);
-        });
+        Schema::dropIfExists('pendampings');
     }
 };

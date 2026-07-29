@@ -32,7 +32,7 @@ class JuriController extends Controller
         $data = $request->validate([
             'name'      => ['required', 'string', 'max:255'],
             'email'     => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
-            'password'  => ['required', 'min:8'],
+            'password'  => ['required', Password::min(8)->mixedCase()->symbols()->uncompromised()],
             'no_hp'     => ['nullable', 'string', 'max:30'],
             'is_active' => ['sometimes', 'boolean'],
         ]);
@@ -67,7 +67,7 @@ class JuriController extends Controller
         $data = $request->validate([
             'name'      => ['required', 'string', 'max:255'],
             'email'     => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($juri->id)],
-            'password'  => ['nullable', 'min:8'],
+            'password'  => ['nullable', Password::min(8)->mixedCase()->symbols()->uncompromised()],
             'no_hp'     => ['nullable', 'string', 'max:30'],
             'is_active' => ['sometimes', 'boolean'],
         ]);

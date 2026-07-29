@@ -195,6 +195,18 @@ class AlokasiController extends Controller
         // (5) Batas 10 siswa (double check, walau Rule::max udah jaga)
         abort_unless(count($data['siswa_ids']) <= self::MAX_SISWA, 422, 'Maksimal ' . self::MAX_SISWA . ' siswa per alokasi.');
 
+        // (6) Cegah siswa double-booking dalam kontingen yang sama
+        $existingSiswa = LombaKontingen::where('kontingen_id', $kontingen->id)
+            ->when($currentLombaId, fn ($q) => $q->where('lomba_id', '!=', $currentLombaId))
+            ->whereHas('siswas', fn ($q) => $q->whereIn('siswa_id', $data['siswa_ids']))
+            ->with(['lomba', 'siswas' => fn ($q) => $q->whereIn('siswa_id', $data['siswa_ids'])])
+            ->get();
+        if ($existingSiswa->isNotEmpty()) {
+            $namaSiswa = $existingSiswa->pluck('siswas')->flatten()->pluck('nama')->unique()->join(', ');
+            $namaLomba = $existingSiswa->pluck('lomba.nama')->unique()->join(', ');
+            abort(422, "Siswa berikut sudah dialokasikan ke lomba lain ({$namaLomba}): {$namaSiswa}");
+        }
+
         $data['siswa_ids'] = $validSiswa;
         return $data;
     }

@@ -97,15 +97,11 @@ class RekapController extends Controller
                         'juara' => $r['rank'], 'medali' => $medali[$r['rank']],
                         'nilai_akhir' => $r['nilai_akhir'], 'is_final' => true,
                     ]);
-                     event(new \App\Events\JuaraUpdated($lomba->event_id, "Juara \"{$lomba->nama}\" diperbarui"));
-                    return back()
-                        ->with('success', 'Juara lomba berhasil dihitung & disimpan.')
-                        ->setStatusCode(303);
                 }
             }
         });
 
-        return back()->with('success', 'Juara lomba berhasil dihitung & disimpan.')->setStatusCode(303);
+        event(new \App\Events\JuaraUpdated($lomba->event_id, "Juara \"{$lomba->nama}\" diperbarui"));
     }
 
     /** Ratakan rekap jadi baris tabel (dipakai Excel & CSV biar konsisten). */

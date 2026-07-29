@@ -11,8 +11,8 @@ return new class extends Migration
     {
         Schema::create('lomba_peserta', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lomba_kontigen_id');
-            $table->foreignId('siswa_id');
+            $table->foreignId('lomba_kontingen_id')->constrained('lomba_kontingen')->cascadeOnDelete();
+            $table->foreignId('siswa_id')->constrained('siswas')->cascadeOnDelete();
             $table->string('keterangan');
             $table->timestamps();
         });

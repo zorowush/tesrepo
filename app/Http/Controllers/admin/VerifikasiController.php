@@ -48,7 +48,13 @@ class VerifikasiController extends Controller
                 ]);
             });
 
-        $pendampings = $kontingen->pendampings()->orderBy('nama')->get();
+        $pendampings = $kontingen->pendampings()
+            ->orderBy('nama')
+            ->get()
+            ->map(fn ($p) => array_merge($p->toArray(), [
+                'has_doc' => false,
+                'surat_kesehatan' => null,
+            ]));
 
         return inertia('Admin/Verifikasi/Show', compact('kontingen', 'siswas', 'pendampings'));
     }

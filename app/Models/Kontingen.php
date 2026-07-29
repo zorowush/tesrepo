@@ -98,9 +98,8 @@ class Kontingen extends Model implements HasMedia
         $adaPending = ($siswaPending + $pendampingPending) > 0;
         $adaItem = ($siswaTotal + $pendampingTotal) > 0;
 
-        // Terverifikasi hanya jika: ada siswa & pendamping, dan semuanya approved
-        $semuaApproved = $siswaTotal > 0
-                      && $pendampingTotal > 0
+        // Terverifikasi jika: ada minimal 1 item (siswa/pendamping) dan semuanya approved
+        $semuaApproved = $adaItem
                       && ! $adaRejected
                       && ! $adaPending;
 

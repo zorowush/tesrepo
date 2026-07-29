@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->text('deskripsi')->nullable();
             $table->date('periode_pendaftaran_mulai');
             $table->date('periode_pendaftaran_selesai');
             $table->date('tanggal_pelaksanaan_mulai');
             $table->date('tanggal_pelaksanaan_selesai');
             $table->enum('status', ['draft', 'aktif', 'selesai']);
-            $table->unsignedBigInteger('created_by');
+            $table->foreignId('created_by')->constrained('users');
             $table->timestamps();
         });
     }
